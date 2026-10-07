@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS biblioteca_dom;
 CREATE DATABASE biblioteca_dom;
 use biblioteca_dom;
 
@@ -11,7 +12,7 @@ CREATE TABLE livros (
 );
 
 -- 2. Inserção dos dados
-INSERT INTO livros (titulo, autor, ano_publicacao, preco) VALUES
+INSERT INTO livros (titulo, autor, ano, preco) VALUES
 ('Dom Casmurro', 'Machado de Assis', 1899, 39.90),
 ('O Alquimista', 'Paulo Coelho', 1988, 29.90),
 ('1984', 'George Orwell', 1949, 45.00),

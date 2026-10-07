@@ -26,7 +26,7 @@ async function iniciarServidor(){
     try{
         await testarConexao();
         app.listen(PORT, function(){
-            console.log(`Servidor rodando em http//localhost:${PORT}`)
+            console.log(`Servidor rodando em http://localhost:${PORT}`)
         })
     }catch (erro){
         console.log("nao foi possivel iniciar o server");

@@ -1,0 +1,83 @@
+/* style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f4f6f8;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+main {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+}
+
+thead tr {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Efeito zebrado nas linhas da tabela */
+tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+/* Destaque ao passar o mouse por cima */
+tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Estilização do botão */
+#btnBuscar {
+    display: block;
+    margin: 0 auto 1.5rem auto; /* Centraliza o botão e adiciona espaço antes da tabela */
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#btnBuscar:hover {
+    background-color: #1d4ed8; /* Escurece levemente no hover */
+}
+
+#btnBuscar:active {
+    transform: scale(0.98); /* Efeito sutil de clique */
+}
