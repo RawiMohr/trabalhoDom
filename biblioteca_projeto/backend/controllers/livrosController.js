@@ -15,8 +15,8 @@ async function buscarLivrosId(req, res) {
     try {
         const id = req.params.id;
 
-        const [livros] = await pool.query("SELECT * FROM livros WHERE id ?", [id]);
-        if(livros.lenght === 0){
+        const [livros] = await pool.query("SELECT * FROM livros WHERE id = ?", [id]);
+        if(livros.length === 0){
             return res.status(404).json("livro n encontrado")
         }
         res.status(200).json(livros[0]);

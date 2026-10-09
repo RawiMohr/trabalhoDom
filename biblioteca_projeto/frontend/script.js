@@ -6,6 +6,7 @@ const formulario = document.getElementById("formulario");
 const campoTitulo = document.getElementById("titulo");
 const campoAutor = document.getElementById("autor");
 const campoAno = document.getElementById("ano");
+const botaoSalvar = document.getElementById("btnSalvar");
 
 let idEdicao = null;
 
@@ -17,24 +18,24 @@ async function salvarLivro(evento) {
     if (idEdicao === null) {
         await cadastrarLivro();
     } else {
-        await atualizarLivro(idEdicao);
+        await atualizarLivro();
     }
 }
 
 async function buscarLivros() {
     try {
         mensagem.textContent = "Buscando livros...";
-        
+
         const resposta = await fetch("http://localhost:3000/livros");
-        
+
         if (!resposta.ok) {
             throw new Error("Erro HTTP " + resposta.status);
         }
-        
+
         const livros = await resposta.json();
 
         listaLivros.innerHTML = "";
-        
+
         if (!Array.isArray(livros) || livros.length === 0) {
             mensagem.textContent = "Nenhum livro cadastrado.";
             return;
@@ -47,9 +48,10 @@ async function buscarLivros() {
                     <td>${livros[i].titulo}</td>
                     <td>${livros[i].autor}</td>
                     <td>${livros[i].ano}</td>
-                    <td><button onclick="editarLivro(${livros[i].id})">Editar</button></td>
-                    <td><button onclick="excluirLivro(${livros[i].id})">Excluir</button></td>
-
+                    <td>
+                        <button onclick="editarLivro(${livros[i].id})">Editar</button>
+                        <button onclick="excluirLivro(${livros[i].id})">Excluir</button>
+                    </td>
                 </tr>
             `;
         }
@@ -62,7 +64,6 @@ async function buscarLivros() {
     }
 }
 
-
 async function cadastrarLivro() {
     try {
         const livro = {
@@ -72,7 +73,7 @@ async function cadastrarLivro() {
         };
 
         const resposta = await fetch("http://localhost:3000/livros", {
-            method: "POST", 
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(livro)
         });
@@ -107,6 +108,7 @@ async function editarLivro(id) {
         campoAno.value = livro.ano;
 
         idEdicao = livro.id;
+        botaoSalvar.textContent = "Atualizar";
         mensagem.textContent = "Editando livro ID: " + livro.id;
 
     } catch (erro) {
@@ -115,7 +117,7 @@ async function editarLivro(id) {
     }
 }
 
-async function atualizarLivro(id) {
+async function atualizarLivro() {
     try {
         const livro = {
             titulo: campoTitulo.value,
@@ -123,7 +125,7 @@ async function atualizarLivro(id) {
             ano: campoAno.value
         };
 
-        const resposta = await fetch("http://localhost:3000/livros/" + id, {
+        const resposta = await fetch("http://localhost:3000/livros/" + idEdicao, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(livro)
@@ -137,58 +139,39 @@ async function atualizarLivro(id) {
 
         formulario.reset();
         idEdicao = null;
+        botaoSalvar.textContent = "Cadastrar";
         await buscarLivros();
 
-        mensagem.textContent = dados.mensagem || "Livro atualizado com sucesso!";
+        mensagem.textContent = dados.mensagem;
 
-    } catch (error) {
-        mensagem.textContent = "Erro ao atualizar livro";
-        console.error("Não foi possível atualizar o livro", error);
+    } catch (erro) {
+        mensagem.textContent = "Não foi possível editar o livro";
+        console.error("Erro ao editar livro", erro);
     }
 }
-    async function atualizarLivro() {
-        try{
-            const livro = {titulo: campoTitulo.value, autor: campoAutor.value, ano:campoAno.value};
-            console.log("livro atualizado", livro);
 
-            const resposta = await fetch("hettp://localhost:300/livro/" + idEdicao, {method: "PUT", headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(livro)});
-            if(!resposta.ok){
-                throw new Error("Erro HTTP: "+ resposta.status);
-            }
-            const dados = await resposta.json();
-            formulario.reset();
-            idEdicao = null;
-            botaoSalvar.textContent = "Cadastrar";
-            await buscarLivros();
-
-            mensagem.textContent = dados.mensagem
-        }
-        catch{
-            mensagem.textContent="Não foi possivel editar o livro";
-            console.log("Erro ao editar livro", erro);
-        
-        
-    }}; 
-
-    async function excluirLivro(req,res) {
-        const confirmar = confirm("Deseja excluir esse livro");
-        if(!confirmar){
-            return;
-        }
-        try{
-            const resposta = await fetch("http://localhost:3000/livros/"+id,{
-                method: "DELETE"
-            });
-            if(!resposta.ok){
-                throw new Error("Erro HTTP: ", resposta.status);
-            }
-            const dados = await resposta.json();
-            await buscarLivros();
-            mensagem.textContent = dados.mensagem;
-
-        }catch(erro){
-            mensagem.textContent="Não foi possivel excluir o livro";
-            console.log("Erro ao excluir livro", erro);
-        }
+async function excluirLivro(id) {
+    const confirmar = confirm("Deseja excluir esse livro?");
+    if (!confirmar) {
+        return;
     }
+
+    try {
+        const resposta = await fetch("http://localhost:3000/livros/" + id, {
+            method: "DELETE"
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro HTTP: " + resposta.status);
+        }
+
+        const dados = await resposta.json();
+
+        await buscarLivros();
+        mensagem.textContent = dados.mensagem;
+
+    } catch (erro) {
+        mensagem.textContent = "Não foi possível excluir o livro";
+        console.error("Erro ao excluir livro", erro);
+    }
+}

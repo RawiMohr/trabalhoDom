@@ -1,83 +1,413 @@
-/* style.css */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Instrument+Sans:wght@400..700&display=swap");
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+/* Tokens de cor e tipografia */
+:root {
+    color-scheme: light dark;
+
+    --bg: #e8edef;
+    --surface: #ffffff;
+    --ink: #15222c;
+    --muted: #5a6a76;
+    --line: #cbd5db;
+
+    --primary: #0d5c4f;
+    --primary-hover: #0a4a40;
+    --primary-ink: #ffffff;
+    --oxblood: #9b2c3a;
+    --brass: #b3832a;
+
+    --s1: #0d5c4f;
+    --s2: #9b2c3a;
+    --s3: #c48f2a;
+    --s4: #2b4a7e;
+    --s5: #6a4472;
+
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f171c;
+        --surface: #17232a;
+        --ink: #e6eef1;
+        --muted: #93a5b0;
+        --line: #2b3c46;
+
+        --primary: #3fb59f;
+        --primary-hover: #5bcbb6;
+        --primary-ink: #06211c;
+        --oxblood: #e0707f;
+        --brass: #e0ae45;
+
+        --s1: #3fb59f;
+        --s2: #d9606f;
+        --s3: #e0ae45;
+        --s4: #6c8fd6;
+        --s5: #a77bb3;
+    }
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
-    background-color: #f4f6f8;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    padding: 2rem 1rem;
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font: 1rem/1.5 var(--font-body);
+    -webkit-font-smoothing: antialiased;
 }
 
+::selection { background: var(--primary); color: var(--primary-ink); }
+
+button, input { font: inherit; }
+
+/* Layout principal: lista à esquerda, ficha de cadastro à direita */
 main {
-    background-color: #ffffff;
-    width: 100%;
-    max-width: 800px;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 4rem) clamp(1rem, 4vw, 2.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas:
+        "titulo buscar"
+        "status status"
+        "lista  ficha";
+    column-gap: 2.5rem;
+    row-gap: 1.25rem;
+    align-items: start;
 }
 
+/* Título com a estante de livros */
 h1 {
-    margin-bottom: 1.5rem;
-    color: #1e293b;
-    text-align: center;
+    grid-area: titulo;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.8rem, 7vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
 
-th, td {
-    padding: 12px 16px;
-    text-align: left;
-}
-
-thead tr {
-    background-color: #2563eb;
-    color: #ffffff;
-}
-
-tbody tr {
-    border-bottom: 1px solid #e2e8f0;
-}
-
-/* Efeito zebrado nas linhas da tabela */
-tbody tr:nth-child(even) {
-    background-color: #f8fafc;
-}
-
-/* Destaque ao passar o mouse por cima */
-tbody tr:hover {
-    background-color: #f1f5f9;
-}
-
-/* Estilização do botão */
-#btnBuscar {
-    display: block;
-    margin: 0 auto 1.5rem auto; /* Centraliza o botão e adiciona espaço antes da tabela */
-    padding: 10px 20px;
-    background-color: #2563eb;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: bold;
+/* Botões principais */
+#btnBuscar,
+#btnSalvar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--primary);
+    color: var(--primary-ink);
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-#btnBuscar:hover {
-    background-color: #1d4ed8; /* Escurece levemente no hover */
+#btnBuscar:hover,
+#btnSalvar:hover { background: var(--primary-hover); }
+
+#btnBuscar:active,
+#btnSalvar:active { transform: translateY(1px); }
+
+#btnBuscar {
+    grid-area: buscar;
+    align-self: end;
+    justify-self: stretch;
 }
 
-#btnBuscar:active {
-    transform: scale(0.98); /* Efeito sutil de clique */
+#btnBuscar::before {
+    content: "";
+    width: 1.1em;
+    height: 1.1em;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Mensagem de status */
+#mensagem {
+    grid-area: status;
+    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.5rem 1rem;
+    border-left: 4px solid var(--brass);
+    border-radius: 4px 12px 12px 4px;
+    background: var(--surface);
+    font-size: 0.95rem;
+}
+
+#mensagem:empty { display: none; }
+
+/* Tabela: cada linha parece um livro na estante */
+table {
+    grid-area: lista;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.55rem;
+    font-variant-numeric: tabular-nums;
+}
+
+th {
+    padding: 0 1rem 0.25rem;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+th:first-child { width: 3.5rem; }
+th:nth-child(4) { width: 5rem; }
+th:last-child { text-align: right; }
+
+tbody tr:nth-child(5n + 1) { --spine: var(--s1); }
+tbody tr:nth-child(5n + 2) { --spine: var(--s2); }
+tbody tr:nth-child(5n + 3) { --spine: var(--s3); }
+tbody tr:nth-child(5n + 4) { --spine: var(--s4); }
+tbody tr:nth-child(5n + 5) { --spine: var(--s5); }
+
+tbody td {
+    padding: 0.95rem 1rem;
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+    transition: background-color 0.15s ease;
+}
+
+tbody td:first-child {
+    padding-left: 1.4rem;
+    border-left: 1px solid var(--line);
+    border-radius: 12px 0 0 12px;
+    box-shadow: inset 7px 0 0 var(--spine);
+    color: var(--muted);
+}
+
+tbody td:last-child {
+    border-right: 1px solid var(--line);
+    border-radius: 0 12px 12px 0;
+    text-align: right;
+    white-space: nowrap;
+}
+
+tbody tr:hover td { background: color-mix(in srgb, var(--surface) 90%, var(--primary)); }
+
+tbody td:nth-child(2) {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+tbody td:nth-child(3) { color: var(--muted); }
+
+/* Estado vazio, quando a lista ainda não foi carregada */
+table:has(#listaLivros:empty) {
+    display: block;
+    padding: 3.5rem 1.5rem;
+    border: 2px dashed var(--line);
+    border-radius: 16px;
+    text-align: center;
+    color: var(--muted);
+}
+
+table:has(#listaLivros:empty) thead { display: none; }
+
+table:has(#listaLivros:empty)::after {
+    content: "A estante está vazia. Clique em Buscar livros para carregar o acervo.";
+}
+
+/* Botões Editar e Excluir */
+td button {
+    padding: 0.4rem 0.9rem;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+td button + button { margin-left: 0.4rem; }
+
+button[onclick^="editarLivro"] { color: var(--primary); }
+button[onclick^="excluirLivro"] { color: var(--oxblood); }
+
+button[onclick^="editarLivro"]:hover {
+    background: var(--primary);
+    color: var(--primary-ink);
+}
+
+button[onclick^="excluirLivro"]:hover {
+    background: var(--oxblood);
+    color: #ffffff;
+}
+
+/* Ficha de cadastro, como uma ficha de catálogo de biblioteca */
+section {
+    grid-area: ficha;
+    position: sticky;
+    top: 1.5rem;
+    padding: 1.5rem 1.5rem 3.25rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    box-shadow: 5px 5px 0 -1px var(--surface), 5px 5px 0 0 var(--line);
+}
+
+section::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 1.1rem;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 1px 3px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+h2 {
+    margin: 0 0 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--oxblood);
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+form {
+    display: grid;
+    gap: 0.35rem;
+}
+
+label {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+#btnSalvar {
+    width: 100%;
+    margin-top: 1.1rem;
+}
+
+/* Uma única entrada animada: as linhas chegam na estante depois da busca */
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes entra-na-estante {
+        from { opacity: 0; transform: translateX(-14px); }
+        to { opacity: 1; transform: none; }
+    }
+
+    tbody tr { animation: entra-na-estante 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    tbody tr:nth-child(2) { animation-delay: 0.04s; }
+    tbody tr:nth-child(3) { animation-delay: 0.08s; }
+    tbody tr:nth-child(4) { animation-delay: 0.12s; }
+    tbody tr:nth-child(5) { animation-delay: 0.16s; }
+    tbody tr:nth-child(6) { animation-delay: 0.2s; }
+    tbody tr:nth-child(7) { animation-delay: 0.24s; }
+    tbody tr:nth-child(8) { animation-delay: 0.28s; }
+    tbody tr:nth-child(n + 9) { animation-delay: 0.32s; }
+}
+
+/* Tablet: uma coluna só */
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "titulo"
+            "buscar"
+            "status"
+            "lista"
+            "ficha";
+    }
+
+    #btnBuscar { justify-self: start; }
+
+    section {
+        position: relative;
+        top: auto;
+    }
+}
+
+/* Celular: cada livro vira um cartão com a lombada na lateral */
+@media (max-width: 640px) {
+    table { display: block; }
+    thead { display: none; }
+    tbody { display: grid; gap: 0.6rem; }
+
+    tbody tr {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            "id titulo ano"
+            "id autor autor"
+            "acoes acoes acoes";
+        gap: 0.15rem 0.75rem;
+        padding: 0.9rem 1rem 0.9rem 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: inset 7px 0 0 var(--spine);
+    }
+
+    tbody td,
+    tbody td:first-child,
+    tbody td:last-child {
+        display: block;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    tbody tr:hover td { background: none; }
+
+    tbody td:nth-child(1) { grid-area: id; }
+    tbody td:nth-child(2) { grid-area: titulo; }
+    tbody td:nth-child(3) { grid-area: autor; }
+    tbody td:nth-child(4) { grid-area: ano; color: var(--muted); }
+
+    tbody td:nth-child(5) {
+        grid-area: acoes;
+        margin-top: 0.6rem;
+        text-align: left;
+    }
+
+    td button { padding: 0.55rem 1.1rem; }
+
+    #btnBuscar { justify-self: stretch; }
 }
