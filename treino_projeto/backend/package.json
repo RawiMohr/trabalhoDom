@@ -1,0 +1,16 @@
+{
+  "name": "treino-projeto",
+  "version": "1.0.0",
+  "description": "Sistema simples para organizar exercícios de musculação",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.4"
+  }
+}

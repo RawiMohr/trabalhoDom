@@ -1,0 +1,174 @@
+/* Cores e fontes da página. */
+:root {
+    color-scheme: light;
+    --fundo: #e8edef;
+    --superficie: #ffffff;
+    --texto: #15222c;
+    --suave: #5a6a76;
+    --linha: #cbd5db;
+    --principal: #0d5c4f;
+    --principal-escuro: #0a4a40;
+    --alerta: #9b2c3a;
+    --detalhe: #b3832a;
+    font-family: "Instrument Sans", "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--fundo);
+    color: var(--texto);
+    line-height: 1.5;
+}
+
+button, input { font: inherit; }
+
+main {
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: clamp(1.25rem, 5vw, 4rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-areas: "cabecalho cabecalho" "mensagem mensagem" "lista formulario";
+    gap: 1.25rem 2rem;
+    align-items: start;
+}
+
+.cabecalho {
+    grid-area: cabecalho;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+}
+
+.sobretitulo {
+    margin: 0 0 0.35rem;
+    color: var(--principal);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+h1, h2, p { margin-top: 0; }
+
+h1 {
+    margin-bottom: 0.25rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.8rem, 7vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1;
+}
+
+.introducao { margin: 0; color: var(--suave); }
+
+#btnBuscar, #btnSalvar {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.8rem 1.35rem;
+    background: var(--principal);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#btnBuscar:hover, #btnSalvar:hover { background: var(--principal-escuro); }
+
+#mensagem {
+    grid-area: mensagem;
+    margin: 0;
+    padding: 0.65rem 1rem;
+    border-left: 4px solid var(--detalhe);
+    border-radius: 4px 12px 12px 4px;
+    background: var(--superficie);
+}
+
+#mensagem:empty { display: none; }
+
+.painel-lista { grid-area: lista; min-width: 0; }
+.barra-lista { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 0.75rem; }
+
+h2 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+label { display: grid; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; }
+
+input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.65rem 0.75rem;
+    border: 1.5px solid var(--linha);
+    border-radius: 9px;
+    background: var(--superficie);
+    color: var(--texto);
+}
+
+input:focus, button:focus-visible {
+    outline: 3px solid #b3832a66;
+    outline-offset: 2px;
+}
+
+.tabela-rolagem {
+    overflow-x: auto;
+    border: 1px solid var(--linha);
+    border-radius: 14px;
+    background: var(--superficie);
+}
+
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 0.8rem 0.65rem; border-bottom: 1px solid var(--linha); white-space: nowrap; }
+th { color: var(--suave); font-size: 0.78rem; font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #f4f7f7; }
+td:first-child { color: var(--suave); }
+
+td button {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.botao-editar { color: var(--principal); }
+.botao-excluir { margin-left: 0.25rem; color: var(--alerta); }
+.botao-editar:hover { background: var(--principal); color: #fff; }
+.botao-excluir:hover { background: var(--alerta); color: #fff; }
+
+.cartao-formulario {
+    grid-area: formulario;
+    position: sticky;
+    top: 1rem;
+    padding: 1.4rem;
+    border: 1px solid var(--linha);
+    border-radius: 14px;
+    background: var(--superficie);
+    box-shadow: 5px 5px 0 -1px var(--superficie), 5px 5px 0 0 var(--linha);
+}
+
+.cartao-formulario h2 { margin-bottom: 1rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--alerta); }
+form { display: grid; gap: 0.35rem; }
+form > label { margin-top: 0.4rem; }
+.campos-numericos { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+#btnSalvar { width: 100%; margin-top: 0.9rem; }
+.botao-cancelar { padding: 0.6rem; border: 1px solid var(--linha); border-radius: 999px; background: transparent; color: var(--texto); cursor: pointer; }
+[hidden] { display: none !important; }
+
+@media (max-width: 900px) {
+    main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "cabecalho" "mensagem" "lista" "formulario"; }
+    .cartao-formulario { position: static; }
+}
+
+@media (max-width: 600px) {
+    .cabecalho { align-items: start; flex-direction: column; }
+    #btnBuscar { width: 100%; }
+    .barra-lista { align-items: stretch; flex-direction: column; }
+}
