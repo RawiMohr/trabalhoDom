@@ -1,64 +1,44 @@
 # Sistema de Treinos
 
-## Problema
+## Sobre o projeto
 
-Quem treina musculação, principalmente quem está começando, costuma receber a ficha em papel ou por mensagem. Ela pode se perder ou ficar desatualizada. O aluno também pode esquecer as séries, as repetições e as cargas usadas. Para o instrutor, acompanhar e atualizar as fichas de várias pessoas dá trabalho.
+Quem treina musculação costuma receber a ficha em papel ou por mensagem. Ela pode se perder, ficar desatualizada ou ser difícil de consultar durante o treino. O aluno também pode esquecer as séries, as repetições e a carga que usou.
 
-Esse problema afeta alunos de academia, instrutores e também a administração, que precisa organizar os acessos ao sistema. Sem um lugar para consultar os treinos e registrar as cargas, fica mais difícil acompanhar o que foi feito e perceber a evolução de cada aluno.
+Isso afeta alunos, instrutores e a administração da academia. O instrutor precisa organizar as fichas de várias pessoas, o aluno precisa consultar o treino e acompanhar as cargas, e a administração precisa cuidar dos acessos. Por isso, estou planejando um sistema simples para deixar essas informações em um só lugar.
 
-## Proposta de solução
+## O que o sistema vai fazer
 
-O Sistema de Treinos será um site para organizar as fichas de musculação. O instrutor poderá montar e atualizar a ficha de cada aluno. O aluno poderá consultar a própria ficha pelo computador ou celular e registrar a carga usada no treino. A administração poderá cuidar dos acessos dos usuários.
+O instrutor poderá montar e atualizar a ficha de cada aluno. O aluno poderá consultar a própria ficha pelo celular ou computador e registrar as cargas usadas. O administrador poderá cuidar dos acessos.
 
-Os objetivos do projeto são:
+Quero deixar as fichas mais fáceis de consultar, ajudar o aluno a acompanhar as cargas e separar o que cada tipo de usuário pode fazer.
 
-1. Manter os exercícios de cada aluno organizados em uma ficha.
-2. Permitir que o aluno consulte a ficha e acompanhe as cargas registradas.
-3. Dar ao instrutor ferramentas para organizar os treinos dos alunos.
-4. Separar as permissões de aluno, instrutor e administrador.
+As funções previstas são:
 
-## Funcionalidades
+* Aluno: criar uma conta, ver a própria ficha e o próprio histórico, e registrar a carga usada.
+* Instrutor: consultar os alunos e criar, editar ou excluir exercícios nas fichas deles. Também poderá consultar os registros dos treinos.
+* Administrador: fazer o que o instrutor faz, listar usuários e alterar o nível de acesso de outra pessoa.
 
-O que já existe:
+O cadastro aberto será sempre de aluno. As permissões serão conferidas pela API também.
 
-* CRUD de exercícios: consultar, cadastrar, editar e excluir exercícios. Cada exercício tem nome, grupo muscular, séries e repetições.
+## Como deve funcionar
 
-O que está planejado:
+1. O aluno cria a conta e entra no sistema.
+2. O instrutor escolhe um aluno e monta a ficha dele.
+3. O aluno consulta a ficha e registra as cargas do treino.
+4. O aluno vê o histórico, e o instrutor pode acompanhar os registros.
+5. O administrador gerencia os acessos dos usuários.
 
-* Cadastro e login de alunos, instrutores e administradores.
-* Uma ficha de exercícios ligada a cada aluno.
-* Consulta da ficha e registro das cargas usadas pelo aluno.
-* Histórico dos treinos registrados.
-* Gerenciamento dos usuários pelo administrador.
+## O que já está pronto
 
-## Tipos de usuário planejados
-
-* **Aluno:** cria a própria conta, consulta somente a própria ficha, registra as cargas do treino e vê o próprio histórico.
-* **Instrutor:** consulta os alunos e cria, edita ou exclui exercícios nas fichas. Também pode consultar os registros dos alunos.
-* **Administrador:** tem as ações do instrutor e pode listar usuários e alterar o nível de acesso de outra pessoa.
-
-O cadastro aberto ao público criará uma conta de aluno. As permissões também serão verificadas pela API.
-
-## Fluxo básico planejado
-
-1. O aluno cria uma conta e entra no sistema.
-2. O instrutor entra e seleciona um aluno para organizar a ficha.
-3. O aluno consulta a própria ficha e registra a carga usada em cada treino.
-4. O aluno consulta seu histórico e o instrutor pode acompanhar os registros.
-5. O administrador gerencia os níveis de acesso dos usuários.
-
-Na versão atual, existe somente o CRUD de exercícios, sem contas ou perfis de usuário.
+Por enquanto, o sistema tem o CRUD de exercícios. Dá para consultar, cadastrar, editar e excluir exercícios com nome, grupo muscular, séries e repetições. Cadastro, login e perfis ainda serão feitos nas próximas etapas.
 
 ## Tecnologias
 
-* **Frontend:** HTML, CSS e JavaScript no navegador. O JavaScript usa `fetch` para conversar com a API.
-* **Backend:** Node.js com Express, em módulos ES.
-* **Banco de dados:** MySQL, acessado pelo pacote `mysql2`.
-* **Execução local:** Live Server para abrir a página e uma API Express na porta 3000.
+O site usa HTML, CSS e JavaScript. O JavaScript conversa com uma API feita com Node.js e Express, e os dados ficam em um banco MySQL. No navegador, uso `fetch` para enviar pedidos à API.
 
-## Estrutura do repositório
+## Pastas do projeto
 
-Esta é a estrutura que existe na Entrega 1:
+Esta é a estrutura atual:
 
 ```text
 .
@@ -70,100 +50,51 @@ Esta é a estrutura que existe na Entrega 1:
 │   ├── database/conexao.js
 │   ├── middlewares/corsMiddleware.js
 │   ├── package-lock.json
-│   ├── package.json
 │   ├── routes/exerciciosRoutes.js
+│   ├── package.json
 │   └── server.js
 ├── frontend/
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
-└── sql/
-    └── treino.sql
+└── sql/treino.sql
 ```
 
-O restante planejado será criado nas próximas entregas:
+Nas próximas entregas, vou acrescentar:
 
-* **Entrega 2:** `backend/routes/` e `backend/controllers/` recebem os arquivos de autenticação e usuários. `backend/middlewares/` recebe autenticação e autorização. O SQL passa a criar as tabelas relacionadas e o frontend recebe as páginas de cadastro, login, aluno, instrutor e administrador, além de `js/api.js`.
-* **Entrega 3:** entram as rotas e o controller de registros de treino, junto com as telas de histórico e registro de carga.
-* **Entrega 4:** entram o tratamento final de erros, os ajustes de apresentação e a documentação completa para executar e demonstrar o sistema.
+* **Entrega 2:** tabelas relacionadas, cadastro e login, JWT, perfis e telas para cada tipo de usuário. As rotas ligam os endereços da API aos controllers. Os controllers cuidam das consultas e regras. Os middlewares verificam o token e as permissões. A pasta `database` configura a conexão com o MySQL.
+* **Entrega 3:** ficha ligada a cada aluno, validações do CRUD e registro de carga e histórico.
+* **Entrega 4:** tratamento de erros, revisão final, testes e instruções para apresentar o sistema.
 
-Ao final, a estrutura planejada é:
+## Banco de dados planejado
 
-```text
-backend/
-├── server.js
-├── package.json
-├── .env.example
-├── database/conexao.js
-├── routes/
-│   ├── authRoutes.js
-│   ├── usuariosRoutes.js
-│   ├── exerciciosRoutes.js
-│   └── registrosRoutes.js
-├── controllers/
-│   ├── authController.js
-│   ├── usuariosController.js
-│   ├── exerciciosController.js
-│   └── registrosController.js
-└── middlewares/
-    ├── corsMiddleware.js
-    ├── autenticacaoMiddleware.js
-    └── autorizacaoMiddleware.js
-frontend/
-├── index.html
-├── cadastro.html
-├── aluno.html
-├── instrutor.html
-├── admin.html
-├── css/style.css
-└── js/
-    ├── api.js
-    ├── login.js
-    ├── cadastro.js
-    ├── aluno.js
-    ├── instrutor.js
-    └── admin.js
-```
+Na Entrega 1, o banco `treino_dom` ainda tem só a tabela `exercicios`. Na Entrega 2, o plano é usar três tabelas:
 
-Os arquivos de autenticação, usuários e novas páginas nascem na Entrega 2. Os arquivos de registros e as funções de histórico nascem na Entrega 3. O tratamento de erros e a revisão final acontecem na Entrega 4.
+* `usuarios`: `id`, `nome`, `email`, `senha` guardada com hash, `nivel` (`aluno`, `instrutor` ou `admin`) e `data_criacao`. O email será único.
+* `exercicios`: `id`, `nome`, `grupo_muscular`, `series`, `repeticoes`, `carga_kg` e `aluno_id`. O `aluno_id` liga o exercício a `usuarios`. O nome não poderá se repetir na ficha do mesmo aluno.
+* `registros_treino`: `id`, `exercicio_id`, `aluno_id`, `carga_kg` e `data_registro`. Cada registro liga um aluno a um exercício. Um exercício só terá um registro por dia, e os registros serão apagados junto com o exercício.
 
-### Responsabilidade das pastas do backend
+As três tabelas terão um id como chave primária. Exercícios apontam para usuários, e registros apontam para exercícios e usuários por chaves estrangeiras.
 
-* `routes` liga cada endereço HTTP a uma função do controller.
-* `controllers` valida os dados recebidos, aplica as regras do sistema e monta as respostas da API.
-* `middlewares` verifica informações que devem ser conferidas antes de chegar ao controller, como identidade e nível de acesso.
-* `database` configura o acesso ao MySQL e fornece o pool de conexões usado pelas consultas.
+## Andamento
 
-## Modelo de dados planejado
+* [x] Entrega 1: problema, proposta, estrutura inicial e documentação.
+* [ ] Entrega 2: banco relacionado, cadastro, login, JWT e perfis.
+* [ ] Entrega 3: CRUD das fichas, permissões e regras de negócio.
+* [ ] Entrega 4: revisão, testes e preparação da apresentação.
 
-O banco continuará se chamando `treino_dom`. A Entrega 1 ainda usa somente a tabela `exercicios` atual. O modelo com três tabelas será criado na Entrega 2:
+## Como executar a versão atual
 
-* **usuarios:** guarda `id` (chave primária), `nome`, `email` (único), `senha` com hash, `nivel` (`aluno`, `instrutor` ou `admin`) e `data_criacao`.
-* **exercicios:** guarda `id` (chave primária), `nome`, `grupo_muscular`, `series`, `repeticoes`, `carga_kg` e `aluno_id` (chave estrangeira para `usuarios.id`). O nome será único dentro da ficha de cada aluno.
-* **registros_treino:** guarda `id` (chave primária), `exercicio_id` (chave estrangeira para `exercicios.id`), `aluno_id` (chave estrangeira para `usuarios.id`), `carga_kg` e `data_registro`. Cada exercício terá no máximo um registro por aluno em cada dia. Ao excluir um exercício, seus registros serão excluídos junto com ele.
-
-Assim, um usuário com nível aluno pode ter vários exercícios e vários registros. Cada registro aponta para um exercício e para o aluno que treinou.
-
-## Andamento das entregas
-
-* [x] **Entrega 1:** problema, proposta, organização na raiz e estrutura inicial documentados.
-* [ ] **Entrega 2:** banco relacionado, cadastro, login, JWT e perfis.
-* [ ] **Entrega 3:** CRUD ligado às fichas, registro de treinos, permissões e validações.
-* [ ] **Entrega 4:** revisão de erros, teste de instalação limpa, documentação final e apresentação.
-
-## Como executar o estado atual
-
-1. Inicie o MySQL e importe `sql/treino.sql` pelo MySQL Workbench ou por outro cliente MySQL. O script recria o banco `treino_dom`, apagando os dados anteriores desse banco, e insere exercícios de exemplo.
-2. Confira os dados locais de conexão em `backend/.env`. O arquivo `.env.example` mostra os nomes das configurações. O `.env` não deve ser enviado ao Git.
-3. No PowerShell, abra a pasta `backend` e instale as dependências. Se a política do Windows bloquear `npm`, use `npm.cmd`:
+1. Inicie o MySQL e importe `sql/treino.sql`. O script recria o banco `treino_dom` e adiciona exercícios de exemplo. Ele apaga os dados anteriores desse banco.
+2. Confira a configuração local em `backend/.env`. O arquivo `backend/.env.example` mostra quais valores são necessários. Não envie o `.env` ao Git.
+3. No PowerShell, abra a pasta `backend` e rode:
 
 ```powershell
-cd backend
 npm.cmd install
 npm.cmd start
 ```
 
-4. Abra `frontend/index.html` pelo Live Server, usando `http://127.0.0.1:5500` ou `http://localhost:5500`.
-5. Para conferir se a API está ativa, abra `http://localhost:3000/`. O botão **Buscar exercícios** carrega a lista do banco.
+4. Abra `frontend/index.html` com o Live Server. A página pode usar `http://127.0.0.1:5500` ou `http://localhost:5500`.
+5. Para conferir a API, acesse `http://localhost:3000/`. Na página, clique em **Buscar exercícios** para carregar a lista.
 
-Na versão atual, as rotas de exercícios são `GET /exercicios`, `GET /exercicios/:id`, `POST /exercicios`, `PUT /exercicios/:id` e `DELETE /exercicios/:id`. O servidor também responde em `GET /` para indicar que está ativo.
+As rotas atuais são `GET /exercicios`, `GET /exercicios/:id`, `POST /exercicios`, `PUT /exercicios/:id` e `DELETE /exercicios/:id`.
