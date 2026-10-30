@@ -1,85 +1,20 @@
-const enderecoApi = "http://localhost:3000/exercicios";
 const botaoBuscar = document.getElementById("btnBuscar");
 const listaExercicios = document.getElementById("listaExercicios");
 const mensagem = document.getElementById("mensagem");
+
 const formulario = document.getElementById("formulario");
 const campoNome = document.getElementById("nome");
 const campoGrupo = document.getElementById("grupoMuscular");
 const campoSeries = document.getElementById("series");
 const campoRepeticoes = document.getElementById("repeticoes");
 const botaoSalvar = document.getElementById("btnSalvar");
-const botaoCancelar = document.getElementById("btnCancelar");
 
 let idEdicao = null;
 
 botaoBuscar.addEventListener("click", buscarExercicios);
 formulario.addEventListener("submit", salvarExercicio);
-botaoCancelar.addEventListener("click", cancelarEdicao);
 
-// Lê a mensagem de erro enviada pela API.
-async function lerMensagemErro(resposta) {
-    const dados = await resposta.json();
-    return dados.mensagem || "Não foi possível concluir a operação.";
-}
-
-// Busca todos os exercícios cadastrados.
-async function buscarExercicios() {
-    try {
-        mensagem.textContent = "Buscando exercícios...";
-        const resposta = await fetch(enderecoApi);
-
-        if (!resposta.ok) {
-            throw new Error(await lerMensagemErro(resposta));
-        }
-
-        const exercicios = await resposta.json();
-        listaExercicios.innerHTML = "";
-
-        if (exercicios.length === 0) {
-            mensagem.textContent = "Nenhum exercício encontrado.";
-            return;
-        }
-
-        exercicios.forEach(function (exercicio) {
-            const linha = document.createElement("tr");
-            const valores = [exercicio.id, exercicio.nome, exercicio.grupo_muscular, exercicio.series, exercicio.repeticoes];
-
-            valores.forEach(function (valor) {
-                const celula = document.createElement("td");
-                celula.textContent = valor;
-                linha.appendChild(celula);
-            });
-
-            const celulaAcoes = document.createElement("td");
-            const botaoEditar = document.createElement("button");
-            botaoEditar.type = "button";
-            botaoEditar.textContent = "Editar";
-            botaoEditar.className = "botao-editar";
-            botaoEditar.addEventListener("click", function () {
-                editarExercicio(exercicio.id);
-            });
-
-            const botaoExcluir = document.createElement("button");
-            botaoExcluir.type = "button";
-            botaoExcluir.textContent = "Excluir";
-            botaoExcluir.className = "botao-excluir";
-            botaoExcluir.addEventListener("click", function () {
-                excluirExercicio(exercicio.id);
-            });
-
-            celulaAcoes.append(botaoEditar, botaoExcluir);
-            linha.appendChild(celulaAcoes);
-            listaExercicios.appendChild(linha);
-        });
-
-        mensagem.textContent = exercicios.length + " exercício(s) encontrado(s).";
-    } catch (erro) {
-        console.error(erro);
-        mensagem.textContent = erro.message || "Erro ao conectar com a API.";
-    }
-}
-
-// Decide se o formulário vai cadastrar ou atualizar um exercício.
+// Decide se o formulário vai cadastrar um exercício novo ou atualizar um existente.
 async function salvarExercicio(evento) {
     evento.preventDefault();
     if (idEdicao === null) {
@@ -89,112 +24,163 @@ async function salvarExercicio(evento) {
     }
 }
 
-// Reúne os valores preenchidos no formulário.
-function obterDadosFormulario() {
-    return {
-        nome: campoNome.value.trim(),
-        grupo_muscular: campoGrupo.value.trim(),
-        series: Number(campoSeries.value),
-        repeticoes: Number(campoRepeticoes.value)
-    };
-}
-
-// Envia um exercício novo para a API.
-async function cadastrarExercicio() {
+// Busca os exercícios na API (GET) e mostra na tabela.
+async function buscarExercicios() {
     try {
-        mensagem.textContent = "Cadastrando exercício...";
-        const resposta = await fetch(enderecoApi, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(obterDadosFormulario())
-        });
+        mensagem.textContent = "Buscando exercícios...";
+
+        const resposta = await fetch("http://localhost:3000/exercicios");
 
         if (!resposta.ok) {
-            throw new Error(await lerMensagemErro(resposta));
+            throw new Error("Erro HTTP " + resposta.status);
         }
 
-        const dados = await resposta.json();
-        formulario.reset();
-        await buscarExercicios();
-        mensagem.textContent = dados.mensagem;
+        const exercicios = await resposta.json();
+
+        listaExercicios.innerHTML = "";
+
+        if (exercicios.length === 0) {
+            mensagem.textContent = "Nenhum exercício cadastrado.";
+            return;
+        }
+
+        // Cria uma linha da tabela para cada exercício.
+        for (let i = 0; i < exercicios.length; i++) {
+            listaExercicios.innerHTML += `
+                <tr>
+                    <td>${exercicios[i].id}</td>
+                    <td>${exercicios[i].nome}</td>
+                    <td>${exercicios[i].grupo_muscular}</td>
+                    <td>${exercicios[i].series}</td>
+                    <td>${exercicios[i].repeticoes}</td>
+                    <td>
+                        <button class="botao-editar" onclick="editarExercicio(${exercicios[i].id})">Editar</button>
+                        <button class="botao-excluir" onclick="excluirExercicio(${exercicios[i].id})">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        mensagem.textContent = exercicios.length + " exercícios encontrados.";
     } catch (erro) {
         console.error(erro);
-        mensagem.textContent = erro.message || "Erro ao cadastrar exercício.";
+        mensagem.textContent = "Erro ao conectar com a API (veja se o backend está rodando na porta 3000).";
     }
 }
 
-// Carrega os dados do exercício escolhido para edição.
+// Envia um exercício novo para a API (POST).
+async function cadastrarExercicio() {
+    try {
+        const exercicio = {
+            nome: campoNome.value,
+            grupo_muscular: campoGrupo.value,
+            series: campoSeries.value,
+            repeticoes: campoRepeticoes.value
+        };
+
+        const resposta = await fetch("http://localhost:3000/exercicios", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(exercicio)
+        });
+
+        if (!resposta.ok) {
+            throw new Error("Erro HTTP " + resposta.status);
+        }
+
+        const dados = await resposta.json();
+
+        formulario.reset();
+        await buscarExercicios();
+
+        mensagem.textContent = dados.mensagem;
+    } catch (erro) {
+        mensagem.textContent = "Erro ao cadastrar exercício.";
+        console.error("Não foi possível cadastrar o exercício", erro);
+    }
+}
+
+// Busca um exercício pelo id (GET) e coloca os dados no formulário para editar.
 async function editarExercicio(id) {
     try {
-        const resposta = await fetch(enderecoApi + "/" + id);
+        const resposta = await fetch("http://localhost:3000/exercicios/" + id);
+
         if (!resposta.ok) {
-            throw new Error(await lerMensagemErro(resposta));
+            throw new Error("Erro HTTP " + resposta.status);
         }
 
         const exercicio = await resposta.json();
+
         campoNome.value = exercicio.nome;
         campoGrupo.value = exercicio.grupo_muscular;
         campoSeries.value = exercicio.series;
         campoRepeticoes.value = exercicio.repeticoes;
+
         idEdicao = exercicio.id;
         botaoSalvar.textContent = "Salvar alteração";
-        botaoCancelar.hidden = false;
-        mensagem.textContent = "Editando exercício ID " + exercicio.id + ".";
-        formulario.scrollIntoView({ behavior: "smooth", block: "center" });
+        mensagem.textContent = "Editando exercício ID: " + exercicio.id;
     } catch (erro) {
-        console.error(erro);
-        mensagem.textContent = erro.message || "Não foi possível carregar o exercício.";
+        mensagem.textContent = "Não foi possível carregar o exercício.";
+        console.error("Não foi possível editar o exercício", erro);
     }
 }
 
-// Envia as mudanças do exercício selecionado.
+// Envia os dados alterados para a API (PUT), usando o id guardado em idEdicao.
 async function atualizarExercicio() {
     try {
-        const resposta = await fetch(enderecoApi + "/" + idEdicao, {
+        const exercicio = {
+            nome: campoNome.value,
+            grupo_muscular: campoGrupo.value,
+            series: campoSeries.value,
+            repeticoes: campoRepeticoes.value
+        };
+
+        const resposta = await fetch("http://localhost:3000/exercicios/" + idEdicao, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(obterDadosFormulario())
+            body: JSON.stringify(exercicio)
         });
 
         if (!resposta.ok) {
-            throw new Error(await lerMensagemErro(resposta));
+            throw new Error("Erro HTTP " + resposta.status);
         }
 
         const dados = await resposta.json();
-        cancelarEdicao();
+
+        formulario.reset();
+        idEdicao = null;
+        botaoSalvar.textContent = "Cadastrar";
         await buscarExercicios();
+
         mensagem.textContent = dados.mensagem;
     } catch (erro) {
-        console.error(erro);
-        mensagem.textContent = erro.message || "Não foi possível atualizar o exercício.";
+        mensagem.textContent = "Não foi possível atualizar o exercício.";
+        console.error("Erro ao atualizar exercício", erro);
     }
 }
 
-// Pede confirmação e remove o exercício selecionado.
+// Pede confirmação e exclui o exercício na API (DELETE), usando o id da linha.
 async function excluirExercicio(id) {
-    if (!confirm("Deseja excluir este exercício?")) {
+    const confirmar = confirm("Deseja excluir este exercício?");
+    if (!confirmar) {
         return;
     }
 
     try {
-        const resposta = await fetch(enderecoApi + "/" + id, { method: "DELETE" });
+        const resposta = await fetch("http://localhost:3000/exercicios/" + id, {
+            method: "DELETE"
+        });
+
         if (!resposta.ok) {
-            throw new Error(await lerMensagemErro(resposta));
+            throw new Error("Erro HTTP " + resposta.status);
         }
 
         const dados = await resposta.json();
+
         await buscarExercicios();
         mensagem.textContent = dados.mensagem;
     } catch (erro) {
-        console.error(erro);
-        mensagem.textContent = erro.message || "Não foi possível excluir o exercício.";
+        mensagem.textContent = "Não foi possível excluir o exercício.";
+        console.error("Erro ao excluir exercício", erro);
     }
-}
-
-// Sai da edição e limpa os campos do formulário.
-function cancelarEdicao() {
-    formulario.reset();
-    idEdicao = null;
-    botaoSalvar.textContent = "Cadastrar";
-    botaoCancelar.hidden = true;
 }
