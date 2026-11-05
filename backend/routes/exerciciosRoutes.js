@@ -1,4 +1,6 @@
 import express from "express";
+import autenticacaoMiddleware from "../middlewares/autenticacaoMiddleware.js";
+import autorizacaoMiddleware from "../middlewares/autorizacaoMiddleware.js";
 import {
     listarExercicios,
     buscarExercicioPorId,
@@ -9,11 +11,12 @@ import {
 
 const router = express.Router();
 
-// Liga cada endereço à função responsável pela operação.
+router.use(autenticacaoMiddleware);
+
 router.get("/", listarExercicios);
 router.get("/:id", buscarExercicioPorId);
-router.post("/", cadastrarExercicio);
-router.put("/:id", atualizarExercicio);
-router.delete("/:id", excluirExercicio);
+router.post("/", autorizacaoMiddleware("instrutor", "admin"), cadastrarExercicio);
+router.put("/:id", autorizacaoMiddleware("instrutor", "admin"), atualizarExercicio);
+router.delete("/:id", autorizacaoMiddleware("instrutor", "admin"), excluirExercicio);
 
 export default router;
