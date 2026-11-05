@@ -12,6 +12,7 @@ let idEdicao = null;
 if (usuarioInstrutor) {
     document.getElementById("usuarioNome").textContent = usuarioInstrutor.nome;
     document.getElementById("usuarioNivel").textContent = usuarioInstrutor.nivel;
+    document.getElementById("linkAdministracao").hidden = usuarioInstrutor.nivel !== "admin";
     document.getElementById("btnSair").addEventListener("click", sair);
     document.getElementById("btnBuscar").addEventListener("click", buscarExercicios);
     filtroAluno.addEventListener("change", buscarExercicios);
