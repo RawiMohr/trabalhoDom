@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Sistema de Treinos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="pagina-protegida">
+        <header class="cabecalho">
+            <div>
+                <p class="sobretitulo">SISTEMA DE TREINOS</p>
+                <h1>Usuários</h1>
+                <p class="introducao">Olá, <span id="usuarioNome"></span>. Nível: <span id="usuarioNivel"></span>.</p>
+            </div>
+            <button type="button" class="botao-secundario" id="btnSair">Sair</button>
+        </header>
+        <p id="mensagem" role="status" aria-live="polite"></p>
+        <section class="painel-lista">
+            <div class="barra-lista"><div><p class="sobretitulo">ACESSOS</p><h2>Gerenciar níveis</h2></div></div>
+            <div class="tabela-rolagem">
+                <table>
+                    <thead><tr><th>Nome</th><th>Email</th><th>Nível</th><th>Ação</th></tr></thead>
+                    <tbody id="listaUsuarios"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

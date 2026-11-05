@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha ficha | Sistema de Treinos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="pagina-protegida">
+        <header class="cabecalho">
+            <div>
+                <p class="sobretitulo">SISTEMA DE TREINOS</p>
+                <h1>Minha ficha</h1>
+                <p class="introducao">Olá, <span id="usuarioNome"></span>. Seu nível é <span id="usuarioNivel"></span>.</p>
+            </div>
+            <button type="button" class="botao-secundario" id="btnSair">Sair</button>
+        </header>
+        <p id="mensagem" role="status" aria-live="polite"></p>
+        <section class="painel-lista">
+            <div class="barra-lista"><div><p class="sobretitulo">SEU TREINO</p><h2>Exercícios da ficha</h2></div></div>
+            <div class="tabela-rolagem">
+                <table>
+                    <thead><tr><th>Exercício</th><th>Grupo muscular</th><th>Séries</th><th>Repetições</th><th>Carga de referência</th></tr></thead>
+                    <tbody id="listaExercicios"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="js/api.js"></script>
+    <script src="js/aluno.js"></script>
+</body>
+</html>
