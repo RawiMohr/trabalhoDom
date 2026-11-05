@@ -53,8 +53,10 @@ async function requisicao(caminho, opcoes = {}) {
     }
 
     if (resposta.status === 401) {
-        limparSessao();
-        window.location.href = "index.html";
+        if (sessao.token) {
+            limparSessao();
+            window.location.href = "index.html";
+        }
         throw new Error(dados.mensagem || "Sua sessão terminou. Entre novamente.");
     }
     if (!resposta.ok) {
