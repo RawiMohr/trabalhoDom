@@ -1,100 +1,153 @@
 # Sistema de Treinos
 
-## Sobre o projeto
-
-Quem treina musculação costuma receber a ficha em papel ou por mensagem. Ela pode se perder, ficar desatualizada ou ser difícil de consultar durante o treino. O aluno também pode esquecer as séries, as repetições e a carga que usou.
-
-Isso afeta alunos, instrutores e a administração da academia. O instrutor precisa organizar as fichas de várias pessoas, o aluno precisa consultar o treino e acompanhar as cargas, e a administração precisa cuidar dos acessos. Por isso, estou planejando um sistema simples para deixar essas informações em um só lugar.
-
-## O que o sistema vai fazer
-
-O instrutor poderá montar e atualizar a ficha de cada aluno. O aluno poderá consultar a própria ficha pelo celular ou computador e registrar as cargas usadas. O administrador poderá cuidar dos acessos.
-
-Quero deixar as fichas mais fáceis de consultar, ajudar o aluno a acompanhar as cargas e separar o que cada tipo de usuário pode fazer.
-
-As funções previstas são:
-
-* Aluno: criar uma conta, ver a própria ficha e o próprio histórico, e registrar a carga usada.
-* Instrutor: consultar os alunos e criar, editar ou excluir exercícios nas fichas deles. Também poderá consultar os registros dos treinos.
-* Administrador: fazer o que o instrutor faz, listar usuários e alterar o nível de acesso de outra pessoa.
-
-O cadastro aberto será sempre de aluno. As permissões serão conferidas pela API também.
-
-## Como deve funcionar
-
-1. O aluno cria a conta e entra no sistema.
-2. O instrutor escolhe um aluno e monta a ficha dele.
-3. O aluno consulta a ficha e registra as cargas do treino.
-4. O aluno vê o histórico, e o instrutor pode acompanhar os registros.
-5. O administrador gerencia os acessos dos usuários.
-
-## O que já está pronto
-
-Por enquanto, o sistema tem o CRUD de exercícios. Dá para consultar, cadastrar, editar e excluir exercícios com nome, grupo muscular, séries e repetições. Cadastro, login e perfis ainda serão feitos nas próximas etapas.
+O Sistema de Treinos organiza as fichas de musculação. O instrutor monta e atualiza os exercícios de cada aluno, o aluno consulta a própria ficha e o administrador gerencia os níveis de acesso.
 
 ## Tecnologias
 
-O site usa HTML, CSS e JavaScript. O JavaScript conversa com uma API feita com Node.js e Express, e os dados ficam em um banco MySQL. No navegador, uso `fetch` para enviar pedidos à API.
+* Frontend: HTML, CSS e JavaScript, com Fetch API.
+* Backend: Node.js e Express, organizado em rotas, controllers, middlewares e conexão com o banco.
+* Banco: MySQL relacional.
+* Acesso: senha com hash bcryptjs e token JWT.
 
-## Pastas do projeto
+## Funcionalidades da Entrega 2
 
-Esta é a estrutura atual:
+* Cadastro público de aluno e login para aluno, instrutor e admin.
+* A ficha de exercícios fica ligada a um aluno. O aluno consulta somente a própria ficha.
+* Instrutor e admin consultam fichas e fazem o CRUD de exercícios.
+* Admin lista usuários e altera o nível de acesso.
+* A API confere o token e o nível de acesso. A interface também mostra a tela de cada perfil.
+* O banco já tem uma tabela para registros de treino com alguns dados de exemplo. Registrar cargas pela API e consultar histórico ficam para a Entrega 3.
+
+## Níveis de usuário
+
+* **Aluno:** cria a própria conta, consulta a própria ficha e sai da conta.
+* **Instrutor:** lista alunos, escolhe uma ficha e cria, edita ou exclui exercícios.
+* **Admin:** faz as ações do instrutor, lista todos os usuários e altera o nível de acesso.
+
+O cadastro público sempre cria um aluno. Um campo `nivel` enviado pelo navegador não altera essa regra.
+
+## Como o sistema funciona
+
+1. A pessoa cria uma conta de aluno ou entra com uma conta existente.
+2. O servidor confere a senha e, no login, devolve um token JWT.
+3. O navegador guarda o token e envia o token no header `Authorization` nas rotas protegidas.
+4. O backend confere o token e o nível antes de responder ou alterar os dados.
+5. A tela muda conforme o nível: aluno, instrutor ou admin.
+
+## Estrutura do repositório
 
 ```text
 .
 ├── .gitignore
 ├── README.md
 ├── backend/
-│   ├── .env.example
-│   ├── controllers/exerciciosController.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── exerciciosController.js
+│   │   └── usuariosController.js
 │   ├── database/conexao.js
-│   ├── middlewares/corsMiddleware.js
-│   ├── package-lock.json
-│   ├── routes/exerciciosRoutes.js
+│   ├── middlewares/
+│   │   ├── autenticacaoMiddleware.js
+│   │   ├── autorizacaoMiddleware.js
+│   │   └── corsMiddleware.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── exerciciosRoutes.js
+│   │   └── usuariosRoutes.js
+│   ├── .env.example
 │   ├── package.json
 │   └── server.js
 ├── frontend/
+│   ├── css/style.css
+│   ├── js/
+│   │   ├── admin.js
+│   │   ├── aluno.js
+│   │   ├── api.js
+│   │   ├── cadastro.js
+│   │   ├── instrutor.js
+│   │   └── login.js
+│   ├── admin.html
+│   ├── aluno.html
+│   ├── cadastro.html
 │   ├── index.html
-│   ├── script.js
-│   └── style.css
+│   └── instrutor.html
 └── sql/treino.sql
 ```
 
-Nas próximas entregas, vou acrescentar:
+As **routes** ligam os endereços às funções. Os **controllers** validam os dados básicos e consultam o MySQL. Os **middlewares** conferem token e nível de acesso. A pasta **database** cria o pool de conexões.
 
-* **Entrega 2:** tabelas relacionadas, cadastro e login, JWT, perfis e telas para cada tipo de usuário. As rotas ligam os endereços da API aos controllers. Os controllers cuidam das consultas e regras. Os middlewares verificam o token e as permissões. A pasta `database` configura a conexão com o MySQL.
-* **Entrega 3:** ficha ligada a cada aluno, validações do CRUD e registro de carga e histórico.
-* **Entrega 4:** tratamento de erros, revisão final, testes e instruções para apresentar o sistema.
+## Banco de dados
 
-## Banco de dados planejado
+O banco `treino_dom` tem três tabelas relacionadas:
 
-Na Entrega 1, o banco `treino_dom` ainda tem só a tabela `exercicios`. Na Entrega 2, o plano é usar três tabelas:
+* `usuarios`: id, nome, email único, senha com hash, nível (`aluno`, `instrutor` ou `admin`) e data de criação.
+* `exercicios`: id, nome, grupo muscular, séries, repetições, carga de referência e id do aluno. A chave estrangeira liga cada exercício a `usuarios`.
+* `registros_treino`: id, exercício, aluno, carga e data. As chaves estrangeiras ligam o registro a `exercicios` e `usuarios`. A tabela impede dois registros do mesmo exercício na mesma data e apaga registros quando o exercício é removido.
 
-* `usuarios`: `id`, `nome`, `email`, `senha` guardada com hash, `nivel` (`aluno`, `instrutor` ou `admin`) e `data_criacao`. O email será único.
-* `exercicios`: `id`, `nome`, `grupo_muscular`, `series`, `repeticoes`, `carga_kg` e `aluno_id`. O `aluno_id` liga o exercício a `usuarios`. O nome não poderá se repetir na ficha do mesmo aluno.
-* `registros_treino`: `id`, `exercicio_id`, `aluno_id`, `carga_kg` e `data_registro`. Cada registro liga um aluno a um exercício. Um exercício só terá um registro por dia, e os registros serão apagados junto com o exercício.
+O script cria as três contas de teste, dez exercícios para o aluno de teste e três registros de exemplo. **Atenção:** `sql/treino.sql` apaga e recria o banco `treino_dom`, então a importação remove os dados que já existirem nesse banco.
 
-As três tabelas terão um id como chave primária. Exercícios apontam para usuários, e registros apontam para exercícios e usuários por chaves estrangeiras.
+## Rotas desta entrega
 
-## Andamento
+Todas as respostas de erro e confirmação usam JSON com `mensagem`. Nas rotas protegidas, envie `Authorization: Bearer TOKEN`.
 
-* [x] Entrega 1: problema, proposta, estrutura inicial e documentação.
-* [ ] Entrega 2: banco relacionado, cadastro, login, JWT e perfis.
-* [ ] Entrega 3: CRUD das fichas, permissões e regras de negócio.
-* [ ] Entrega 4: revisão, testes e preparação da apresentação.
+| Método | Rota | Acesso | O que faz |
+| --- | --- | --- | --- |
+| POST | `/auth/cadastro` | Público | Cadastra uma conta de aluno |
+| POST | `/auth/login` | Público | Confere email e senha e devolve o token |
+| GET | `/exercicios` | Qualquer usuário autenticado | Lista a ficha própria do aluno ou fichas para instrutor/admin |
+| GET | `/exercicios/:id` | Qualquer usuário autenticado | Consulta um exercício permitido para o perfil |
+| POST | `/exercicios` | Instrutor e admin | Cria um exercício na ficha de um aluno |
+| PUT | `/exercicios/:id` | Instrutor e admin | Atualiza um exercício |
+| DELETE | `/exercicios/:id` | Instrutor e admin | Exclui um exercício |
+| GET | `/usuarios/alunos` | Instrutor e admin | Lista os alunos para escolher uma ficha |
+| GET | `/usuarios` | Admin | Lista usuários sem devolver a senha |
+| PUT | `/usuarios/:id/nivel` | Admin | Altera o nível de acesso |
 
-## Como executar a versão atual
+O instrutor e o admin podem filtrar `GET /exercicios` com `?aluno_id=ID`. O nível de acesso é lido do token. Se o admin mudar o nível de alguém, a mudança no acesso dessa pessoa passa a valer ao entrar de novo ou quando o token atual expirar.
 
-1. Inicie o MySQL e importe `sql/treino.sql`. O script recria o banco `treino_dom` e adiciona exercícios de exemplo. Ele apaga os dados anteriores desse banco.
-2. Confira a configuração local em `backend/.env`. O arquivo `backend/.env.example` mostra quais valores são necessários. Não envie o `.env` ao Git.
-3. No PowerShell, abra a pasta `backend` e rode:
+## Instalação e execução
+
+1. Inicie o MySQL e importe `sql/treino.sql`. O script recria `treino_dom` e insere os dados de exemplo.
+2. No PowerShell, entre em `backend` e copie o arquivo de exemplo:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+3. Edite `.env` com os dados da conexão MySQL. Gere um segredo para `JWT_SECRET` com o comando abaixo e copie o resultado para o arquivo. Mantenha `JWT_EXPIRES_IN=2h`:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Não envie `backend/.env` ao Git. O `.gitignore` da raiz já ignora esse arquivo.
+
+4. Ainda na pasta `backend`, instale as dependências e inicie a API:
 
 ```powershell
 npm.cmd install
 npm.cmd start
 ```
 
-4. Abra `frontend/index.html` com o Live Server. A página pode usar `http://127.0.0.1:5500` ou `http://localhost:5500`.
-5. Para conferir a API, acesse `http://localhost:3000/`. Na página, clique em **Buscar exercícios** para carregar a lista.
+O servidor não inicia sem `JWT_SECRET`. Quando estiver ativo, a API usa `http://localhost:3000`.
 
-As rotas atuais são `GET /exercicios`, `GET /exercicios/:id`, `POST /exercicios`, `PUT /exercicios/:id` e `DELETE /exercicios/:id`.
+5. Abra `frontend/index.html` com o Live Server. Use `http://127.0.0.1:5500` ou `http://localhost:5500`.
+
+## Contas locais de teste
+
+As três contas usam a senha `Treino@123`:
+
+| Perfil | Email |
+| --- | --- |
+| Admin | `admin@treino.com` |
+| Instrutor | `instrutor@treino.com` |
+| Aluno | `aluno@treino.com` |
+
+Essas contas são apenas para desenvolvimento local. As senhas são guardadas no banco como hash bcrypt, nunca em texto puro.
+
+## Andamento das entregas
+
+* [x] Entrega 1: problema, proposta, estrutura inicial e documentação.
+* [x] Entrega 2: banco relacionado, cadastro, login, JWT e perfis.
+* [ ] Entrega 3: registro de carga, histórico e regras de negócio adicionais.
+* [ ] Entrega 4: tratamento final de erros, revisão, testes e apresentação.
