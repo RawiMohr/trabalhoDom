@@ -3,13 +3,22 @@ import "dotenv/config";
 import exerciciosRoutes from "./routes/exerciciosRoutes.js";
 import corsMiddleware from "./middlewares/corsMiddleware.js";
 import { testarConexao } from "./database/conexao.js";
+import authRoutes from "./routes/authRoutes.js";
+import usuariosRoutes from "./routes/usuariosRoutes.js";
 
 // Cria a aplicação e define a porta do servidor.
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+if (!process.env.JWT_SECRET) {
+    console.error("Configure JWT_SECRET no arquivo backend/.env antes de iniciar o servidor.");
+    process.exit(1);
+}
+
 app.use(corsMiddleware);
 app.use(express.json());
+app.use("/auth", authRoutes);
+app.use("/usuarios", usuariosRoutes);
 app.use("/exercicios", exerciciosRoutes);
 
 // Mostra uma mensagem simples para confirmar que a API está ativa.
