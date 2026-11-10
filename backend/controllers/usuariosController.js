@@ -37,6 +37,9 @@ async function alterarNivel(req, res) {
         if (!niveis.includes(nivel)) {
             return res.status(400).json({ mensagem: "Escolha aluno, instrutor ou admin." });
         }
+        if (id === req.usuario.id) {
+            return res.status(409).json({ mensagem: "Você não pode alterar o próprio nível de acesso." });
+        }
 
         const [resultado] = await pool.query("UPDATE usuarios SET nivel = ? WHERE id = ?", [nivel, id]);
         if (resultado.affectedRows === 0) {
