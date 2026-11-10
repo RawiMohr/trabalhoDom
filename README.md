@@ -1,5 +1,25 @@
 # Sistema de Treinos
 
+## Sobre o projeto
+
+Quem treina musculação costuma receber a ficha em papel ou por mensagem. Ela pode se perder, ficar desatualizada ou ser difícil de consultar durante o treino. O aluno também pode esquecer as séries, as repetições e a carga que usou.
+
+Isso afeta alunos, instrutores e a administração da academia. O instrutor precisa organizar as fichas de várias pessoas, o aluno precisa consultar o treino e acompanhar as cargas, e a administração precisa cuidar dos acessos. Por isso, estou planejando um sistema simples para deixar essas informações em um só lugar.
+
+## O que o sistema vai fazer
+
+O instrutor poderá montar e atualizar a ficha de cada aluno. O aluno poderá consultar a própria ficha pelo celular ou computador e registrar as cargas usadas. O administrador poderá cuidar dos acessos.
+
+Quero deixar as fichas mais fáceis de consultar, ajudar o aluno a acompanhar as cargas e separar o que cada tipo de usuário pode fazer.
+
+As funções previstas são:
+
+* Aluno: criar uma conta, ver a própria ficha e o próprio histórico, e registrar a carga usada.
+* Instrutor: consultar os alunos e criar, editar ou excluir exercícios nas fichas deles. Também poderá consultar os registros dos treinos.
+* Administrador: fazer o que o instrutor faz, listar usuários e alterar o nível de acesso de outra pessoa.
+
+O cadastro aberto será sempre de aluno. As permissões serão conferidas pela API também.
+
 O Sistema de Treinos organiza as fichas de musculação. O instrutor monta e atualiza os exercícios de cada aluno, o aluno consulta a própria ficha e o administrador gerencia os níveis de acesso.
 
 ## Tecnologias
