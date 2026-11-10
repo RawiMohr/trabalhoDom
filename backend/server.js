@@ -5,6 +5,7 @@ import corsMiddleware from "./middlewares/corsMiddleware.js";
 import { testarConexao } from "./database/conexao.js";
 import authRoutes from "./routes/authRoutes.js";
 import usuariosRoutes from "./routes/usuariosRoutes.js";
+import registrosRoutes from "./routes/registrosRoutes.js";
 
 // Cria a aplicação e define a porta do servidor.
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
 app.use("/exercicios", exerciciosRoutes);
+app.use("/registros", registrosRoutes);
 
 // Mostra uma mensagem simples para confirmar que a API está ativa.
 app.get("/", function (req, res) {

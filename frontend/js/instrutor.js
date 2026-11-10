@@ -1,6 +1,8 @@
 const usuarioInstrutor = exigirNivel(["instrutor", "admin"]);
 const corpoExercicios = document.getElementById("listaExercicios");
 const mensagemExercicios = document.getElementById("mensagem");
+const corpoRegistros = document.getElementById("listaRegistros");
+const mensagemRegistros = document.getElementById("mensagemRegistros");
 const formularioExercicio = document.getElementById("formularioExercicio");
 const seletorAluno = document.getElementById("alunoId");
 const filtroAluno = document.getElementById("filtroAluno");
@@ -14,8 +16,8 @@ if (usuarioInstrutor) {
     document.getElementById("usuarioNivel").textContent = usuarioInstrutor.nivel;
     document.getElementById("linkAdministracao").hidden = usuarioInstrutor.nivel !== "admin";
     document.getElementById("btnSair").addEventListener("click", sair);
-    document.getElementById("btnBuscar").addEventListener("click", buscarExercicios);
-    filtroAluno.addEventListener("change", buscarExercicios);
+    document.getElementById("btnBuscar").addEventListener("click", buscarDadosAluno);
+    filtroAluno.addEventListener("change", buscarDadosAluno);
     formularioExercicio.addEventListener("submit", salvarExercicio);
     botaoCancelar.addEventListener("click", cancelarEdicao);
     carregarAlunos();
@@ -44,10 +46,14 @@ async function carregarAlunos() {
             filtroAluno.appendChild(opcaoFiltro);
         }
 
-        await buscarExercicios();
+        await buscarDadosAluno();
     } catch (erro) {
         mensagemExercicios.textContent = erro.message || "Não foi possível carregar os alunos.";
     }
+}
+
+async function buscarDadosAluno() {
+    await Promise.all([buscarExercicios(), buscarRegistros()]);
 }
 
 async function buscarExercicios() {
@@ -88,6 +94,31 @@ async function buscarExercicios() {
     }
 }
 
+async function buscarRegistros() {
+    const alunoId = filtroAluno.value;
+    corpoRegistros.replaceChildren();
+    if (!alunoId) {
+        mensagemRegistros.textContent = "Escolha um aluno para ver os registros.";
+        return;
+    }
+
+    try {
+        const registros = await requisicao("/registros?aluno_id=" + encodeURIComponent(alunoId));
+        for (const registro of registros) {
+            const linha = document.createElement("tr");
+            for (const valor of [registro.data_registro, registro.aluno_nome, registro.exercicio_nome, registro.carga_kg + " kg"]) {
+                const celula = document.createElement("td");
+                celula.textContent = valor;
+                linha.appendChild(celula);
+            }
+            corpoRegistros.appendChild(linha);
+        }
+        mensagemRegistros.textContent = registros.length === 0 ? "Este aluno ainda não tem registros." : registros.length + " registros encontrados.";
+    } catch (erro) {
+        mensagemRegistros.textContent = erro.message || "Não foi possível carregar os registros.";
+    }
+}
+
 async function salvarExercicio(evento) {
     evento.preventDefault();
     const exercicio = {
@@ -103,9 +134,9 @@ async function salvarExercicio(evento) {
         const caminho = idEdicao === null ? "/exercicios" : "/exercicios/" + idEdicao;
         const metodo = idEdicao === null ? "POST" : "PUT";
         const dados = await requisicao(caminho, { method: metodo, body: JSON.stringify(exercicio) });
-        mensagemExercicios.textContent = dados.mensagem;
         cancelarEdicao();
-        await buscarExercicios();
+        await buscarDadosAluno();
+        mensagemExercicios.textContent = dados.mensagem;
     } catch (erro) {
         mensagemExercicios.textContent = erro.message || "Não foi possível salvar o exercício.";
     }
@@ -140,8 +171,8 @@ async function excluirExercicio(id) {
     if (!window.confirm("Deseja excluir este exercício?")) return;
     try {
         const dados = await requisicao("/exercicios/" + id, { method: "DELETE" });
+        await buscarDadosAluno();
         mensagemExercicios.textContent = dados.mensagem;
-        await buscarExercicios();
     } catch (erro) {
         mensagemExercicios.textContent = erro.message || "Não foi possível excluir o exercício.";
     }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <main class="pagina-protegida">
+    <main class="pagina-protegida pagina-aluno">
         <header class="cabecalho">
             <div>
                 <p class="sobretitulo">SISTEMA DE TREINOS</p>
@@ -21,8 +21,18 @@
             <div class="barra-lista"><div><p class="sobretitulo">SEU TREINO</p><h2>Exercícios da ficha</h2></div></div>
             <div class="tabela-rolagem">
                 <table>
-                    <thead><tr><th>Exercício</th><th>Grupo muscular</th><th>Séries</th><th>Repetições</th><th>Carga de referência</th></tr></thead>
+                    <thead><tr><th>Exercício</th><th>Grupo muscular</th><th>Séries</th><th>Repetições</th><th>Carga de referência</th><th>Registrar treino</th></tr></thead>
                     <tbody id="listaExercicios"></tbody>
+                </table>
+            </div>
+        </section>
+        <section class="painel-lista painel-historico" aria-labelledby="tituloHistorico">
+            <div class="barra-lista"><div><p class="sobretitulo">SEUS REGISTROS</p><h2 id="tituloHistorico">Meu histórico</h2></div></div>
+            <p id="mensagemHistorico" role="status" aria-live="polite"></p>
+            <div class="tabela-rolagem">
+                <table>
+                    <thead><tr><th>Data</th><th>Exercício</th><th>Carga do dia</th></tr></thead>
+                    <tbody id="listaHistorico"></tbody>
                 </table>
             </div>
         </section>
