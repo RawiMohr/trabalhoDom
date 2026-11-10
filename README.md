@@ -1,5 +1,17 @@
 # Sistema de Treinos
 
+Contas locais de teste
+
+As três contas usam a senha `Treino@123`:
+
+| Perfil | Email |
+| --- | --- |
+| Admin | `admin@treino.com` |
+| Instrutor | `instrutor@treino.com` |
+| Aluno | `aluno@treino.com` |
+
+Essas contas são apenas para desenvolvimento local. As senhas são guardadas no banco como hash bcrypt, nunca em texto puro.
+
 ## Sobre o projeto
 
 Quem treina musculação costuma receber a ficha em papel ou por mensagem. Ela pode se perder, ficar desatualizada ou ser difícil de consultar durante o treino. O aluno também pode esquecer as séries, as repetições e a carga que usou.
