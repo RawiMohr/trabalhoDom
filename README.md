@@ -29,14 +29,16 @@ O Sistema de Treinos organiza as fichas de musculação. O instrutor monta e atu
 * Banco: MySQL relacional.
 * Acesso: senha com hash bcryptjs e token JWT.
 
-## Funcionalidades da Entrega 2
+## Funcionalidades da Entrega 3
 
 * Cadastro público de aluno e login para aluno, instrutor e admin.
 * A ficha de exercícios fica ligada a um aluno. O aluno consulta somente a própria ficha.
 * Instrutor e admin consultam fichas e fazem o CRUD de exercícios.
-* Admin lista usuários e altera o nível de acesso.
-* A API confere o token e o nível de acesso. A interface também mostra a tela de cada perfil.
-* O banco já tem uma tabela para registros de treino com alguns dados de exemplo. Registrar cargas pela API e consultar histórico ficam para a Entrega 3.
+* O aluno registra a carga usada em cada exercício e consulta o próprio histórico.
+* Instrutor e admin consultam os registros do aluno selecionado.
+* A API valida os limites da ficha, a quantidade máxima de exercícios e as permissões de cada perfil.
+* Admin lista usuários e altera o nível de acesso, mas não pode alterar o próprio nível.
+* A API confere token e nível de acesso. A interface também mostra as ações de cada perfil.
 
 ## Níveis de usuário
 
@@ -64,6 +66,7 @@ O cadastro público sempre cria um aluno. Um campo `nivel` enviado pelo navegado
 │   ├── controllers/
 │   │   ├── authController.js
 │   │   ├── exerciciosController.js
+│   │   ├── registrosController.js
 │   │   └── usuariosController.js
 │   ├── database/conexao.js
 │   ├── middlewares/
@@ -73,6 +76,7 @@ O cadastro público sempre cria um aluno. Um campo `nivel` enviado pelo navegado
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── exerciciosRoutes.js
+│   │   ├── registrosRoutes.js
 │   │   └── usuariosRoutes.js
 │   ├── .env.example
 │   ├── package.json
@@ -119,11 +123,34 @@ Todas as respostas de erro e confirmação usam JSON com `mensagem`. Nas rotas p
 | POST | `/exercicios` | Instrutor e admin | Cria um exercício na ficha de um aluno |
 | PUT | `/exercicios/:id` | Instrutor e admin | Atualiza um exercício |
 | DELETE | `/exercicios/:id` | Instrutor e admin | Exclui um exercício |
+| GET | `/registros` | Qualquer usuário autenticado | Lista registros permitidos para o perfil |
+| POST | `/registros` | Aluno | Registra a carga usada hoje em um exercício da própria ficha |
 | GET | `/usuarios/alunos` | Instrutor e admin | Lista os alunos para escolher uma ficha |
 | GET | `/usuarios` | Admin | Lista usuários sem devolver a senha |
 | PUT | `/usuarios/:id/nivel` | Admin | Altera o nível de acesso |
 
 O instrutor e o admin podem filtrar `GET /exercicios` com `?aluno_id=ID`. O nível de acesso é lido do token. Se o admin mudar o nível de alguém, a mudança no acesso dessa pessoa passa a valer ao entrar de novo ou quando o token atual expirar.
+
+## Regras de negócio
+
+* Uma ficha só pode ser criada para um usuário com nível aluno.
+* Nome do exercício: de 2 a 100 caracteres. Grupo muscular: de 2 a 50 caracteres. Séries: de 1 a 10. Repetições: de 1 a 100. Carga: de 0 a 500 kg.
+* O nome não pode se repetir na ficha do mesmo aluno, e cada aluno pode ter no máximo 15 exercícios.
+* O aluno só registra treino em exercícios da própria ficha. A data vem do servidor, e cada exercício aceita um registro por dia.
+* Excluir um exercício também apaga os registros ligados a ele. A tela pede confirmação antes da exclusão.
+* O admin não pode alterar o próprio nível. O nível escolhido precisa ser aluno, instrutor ou admin.
+
+## Testes manuais de permissão
+
+Use as contas da seção de contas de teste. Os códigos aparecem no elemento de mensagem da tela ou na resposta JSON da API.
+
+1. Sem entrar, tente abrir uma rota protegida como `GET /exercicios`: a API responde `401`.
+2. Entre como aluno. A ficha e o histórico mostram apenas os dados dele. Tentar criar exercício ou abrir a lista de usuários responde `403`.
+3. Na tela do aluno, registre uma carga em um exercício da própria ficha. O primeiro registro responde `201`. Tente registrar o mesmo exercício novamente no mesmo dia: a API responde `409`. Um exercício que pertence a outro aluno responde `403`.
+4. Entre como instrutor. Crie, edite e exclua um exercício, e selecione um aluno para consultar os registros dele. Os exercícios e registros de outras fichas continuam acessíveis pela API apenas para os perfis permitidos.
+5. Entre como admin e tente salvar uma mudança no próprio nível: a API responde `409`. Escolher um nível inválido responde `400`.
+
+Outros casos de `400` incluem campos fora dos limites, aluno inválido e ids de rota que não sejam inteiros positivos. Nome repetido e ficha acima de 15 exercícios respondem `409`.
 
 ## Instalação e execução
 
@@ -169,5 +196,5 @@ Essas contas são apenas para desenvolvimento local. As senhas são guardadas no
 
 * [x] Entrega 1: problema, proposta, estrutura inicial e documentação.
 * [x] Entrega 2: banco relacionado, cadastro, login, JWT e perfis.
-* [ ] Entrega 3: registro de carga, histórico e regras de negócio adicionais.
+* [x] Entrega 3: registro de carga, histórico, permissões e regras de negócio.
 * [ ] Entrega 4: tratamento final de erros, revisão, testes e apresentação.
